@@ -21,15 +21,31 @@ inquirer.prompt(
     {
         type: 'list',
         name: "choise",
-        message: "THIS IS A CLOZE TEST. Do you wanr to create a new CARD or try a quiz?",
+        message: "THIS IS A CLOZE TEST. Do you want to create a new CARD or try a quiz?",
         choices: ["add a card", "answer questions"]
     }).then(function (answer, err) {
         console.log(answer);
         switch (answer.choise) {
             case "add a card":
                 {
+                    inquirer.prompt(
+                        {
+                            type: "input",
+                            name: "newQuestion",
+                            message: "Enter question: "
+                        },
+                        {
+                            type: "input",
+                            name: "newAnswer",
+                            message: "Enter correct answer: "
 
-                }
+                        }).then(function (answer, err) {
+                            console.log(answer);
+
+                        }). catch(function(err){
+                            console.log("err", err);
+                        })
+                                    }
                 break;
             case "answer questions":
                 {
@@ -85,6 +101,7 @@ function readQuestions() {
         showCard();
     });
 };
+
 function showCard() {
     console.log(cardsStorageObj.length);
 
@@ -142,7 +159,7 @@ function showCard() {
 
 
     // function ask(idx) {
-    //     inquirer.prompt(questions[idx]).then(answers => {
+    //     inquirer.prompt(questions[idx]).then(function(answers){
     //         console.log(cardsStorageObj[idx].back + ' vs. ' + answers[idx])
     //         if (idx != questions.length) {
     //             ask(idx++);
