@@ -29,7 +29,7 @@ inquirer.prompt(
             case "add a card":
                 {
                     inquirer.prompt(
-                        {
+                        [{
                             type: "input",
                             name: "newQuestion",
                             message: "Enter question: "
@@ -39,9 +39,12 @@ inquirer.prompt(
                             name: "newAnswer",
                             message: "Enter correct answer: "
 
-                        }).then(function (answer, err) {
-                            console.log(answer);
-
+                        }]).then(function (answer, err) {
+                            var question = answer.newQuestion;
+                            var answer = answer.newAnswer;
+                            var card = new cardBuilder.BasicCard(question, answer);
+                            cardsStorageObj.push(card);
+                            console.log(cardsStorageObj);
                         }). catch(function(err){
                             console.log("err", err);
                         })
@@ -140,7 +143,8 @@ function showCard() {
             // using "when" to prematurely terminate flow (when returns false)
             when: toContinue(i)
         });
-    }
+    };
+
     inquirer.prompt(questions)
         .then(function (answers, err) {
             if (err) throw err;
