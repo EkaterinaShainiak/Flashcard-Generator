@@ -4,7 +4,7 @@ var cardBuilder = require("./card.js");
 var inquirer = require("inquirer");
 var cardStorageJson = require("./cards.json");
 var cardsStorageObj = [];
-var lives = 3;
+var initLives = lives = 3;
 
 // creating a few cards
 
@@ -14,24 +14,33 @@ var lives = 3;
 // addClozeQuestion(firsPresidentCloze);
 
 // addQuestion(firsPresidentCloze);
-// use npm inquirer package
-// inquirer.prompt(
-//     {
-//         type: 'confirm',
-//         name: "game",
-//         message: "THIS IS A CLOZE TEST. ARE YOU READY FOR QUESTIONS?",
-//         default: false
-//     }
-// ).then(function (err, answer) {
-//     if (err) {
-//         console.log(err);
-//         if (!game) {return}
-//         else {
-//             addQuestion(firsPresidentBasic);
 
-//         };
-//     };
-// });
+
+// use npm inquirer package
+inquirer.prompt(
+    {
+        type: 'list',
+        name: "choise",
+        message: "THIS IS A CLOZE TEST. Do you wanr to create a new CARD or try a quiz?",
+        choices: ["add a card", "answer questions"]
+    }).then(function (answer, err) {
+        console.log(answer);
+        switch (answer.choise) {
+            case "add a card":
+                {
+
+                }
+                break;
+            case "answer questions":
+                {
+                    readQuestions();
+                }
+                break;
+
+        }
+    }).catch(function (err) {
+        console.log("err", err);
+    })
 
 // Function to write new cards into json file
 
@@ -61,23 +70,34 @@ var lives = 3;
 
 
 
+function readQuestions() {
+    fs.readFile("./cards.json", "utf8", function (err, res) {
+        if (err) throw err;
+        var resJson = JSON.parse(res);
 
-fs.readFile("./cards.json", "utf8", function (err, res) {
-    if (err) throw err;
-    var resJson = JSON.parse(res);
-
-    for (var i in resJson) {
-        var question = resJson[i]["question"];
-        var answer = resJson[i]["answer"];
-        var card = new cardBuilder.BasicCard(question, answer);
-        cardsStorageObj.push(card);
-    };
-    console.log(cardsStorageObj);
-    showCard();
-});
-
+        for (var i in resJson) {
+            var question = resJson[i]["question"];
+            var answer = resJson[i]["answer"];
+            var card = new cardBuilder.BasicCard(question, answer);
+            cardsStorageObj.push(card);
+        };
+        console.log(cardsStorageObj);
+        showCard();
+    });
+};
 function showCard() {
     console.log(cardsStorageObj.length);
+
+    function printLives() {
+        var bar = '';
+        for (var idx = 0; idx < lives; idx++) {
+            bar += '💖  ';
+        }
+        for (var idx = 0; idx < (initLives - lives); idx++) {
+            bar += '💔  ';
+        }
+        return bar;
+    }
 
     // customise "when" for particular index/question
     function toContinue(idx) {
@@ -89,6 +109,7 @@ function showCard() {
                 console.log('Wrong! Corect answer: ' + cardsStorageObj[idx - 1].back);
                 lives--;
             }
+            console.log("Lives:", printLives());
             return lives;
         }
     }
@@ -130,24 +151,4 @@ function showCard() {
     // }
 
     // ask(0)
-
-
-
-
-
-
-    // -----------------------------------------
-    // Attempt#1 -  All answers are coming together in one array
-
-
-    // var it = 0;
-    // inquirer.prompt(questions).then(function (answers, err) {
-    //     console.log('Question #' + ++it);
-    //     if (err) {
-    //         console.log("err", err);
-
-    //     }
-    // });
-    // -----------------------------------------
-
 };
